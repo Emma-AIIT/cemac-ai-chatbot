@@ -19,8 +19,8 @@ export const SuggestedQuestions = ({ onQuestionSelect }: SuggestedQuestionsProps
   const suggestedQuestions = [
     "What are the seals",
     "How big is the seal",
-    "Show me door hardware options",
-    "Help with a commercial project"
+    "How much do they cost",
+    "Whats the brand name of the seals"
   ];
 
   const handleQuestionClick = (question: string) => {
