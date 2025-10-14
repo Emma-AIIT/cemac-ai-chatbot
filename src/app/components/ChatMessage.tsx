@@ -102,11 +102,12 @@ export const ChatMessage = ({ message, isBot, timestamp }: ChatMessageProps) => 
         {/* Message Bubble */}
         <div className={`flex-1 ${isBot ? 'flex flex-col items-start' : 'flex flex-col items-end'}`}>
           <div
-            className={`rounded-3xl px-6 py-5 max-w-[85%] transition-shadow duration-200 ${
+            className={`rounded-3xl max-w-[85%] transition-shadow duration-200 ${
               isBot
-                ? 'bg-white border border-gray-100 shadow-md hover:shadow-lg'
-                : 'bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 shadow-lg p-top-2'
+                ? 'bg-white border border-gray-100 shadow-md hover:shadow-lg px-6 py-5'
+                : 'bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 shadow-lg px-12 py-8'
             }`}
+            style={!isBot ? { padding: '30px 40px' } : {}}
           >
             {isBot ? (
               <MessageFormatter content={message} />

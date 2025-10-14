@@ -46,7 +46,9 @@ export async function POST(request: NextRequest) {
 
     // Check if the webhook request was successful
     if (!response.ok) {
-      throw new Error(`Webhook error: ${response.status}`);
+      const errorText = await response.text();
+      console.error('Webhook error response:', errorText);
+      throw new Error(`Webhook error: ${response.status} - ${errorText}`);
     }
 
     // Parse the webhook response
