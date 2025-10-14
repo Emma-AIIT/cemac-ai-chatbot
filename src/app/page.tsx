@@ -22,7 +22,7 @@ export default function Home() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Hello! I\'m the CEMAC Doors assistant. How can I help you today?',
+      content: 'Hello! I\'m the Cemac Doors Ai. How can I help you today?',
       timestamp: new Date()
     }
   ]);
