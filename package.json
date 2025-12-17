@@ -20,7 +20,7 @@
     "fs": "^0.0.1-security",
     "lightningcss": "^1.30.2",
     "lucide-react": "^0.545.0",
-    "next": "^15.2.3",
+    "next": "15.2.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
