@@ -1,4 +1,4 @@
-# Setup Guide for Windows
+# Setup Guide for Window
 
 This guide will help you set up and run the CEMAC AI Chatbot project on Windows.
 
