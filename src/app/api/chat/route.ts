@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server';
 import type { ChatRequest, WebhookRequest, WebhookResponse } from '../../types';
 
 // n8n webhook URL - kept secure on the server side
-// const WEBHOOK_URL = 'https://aiemma.app.n8n.cloud/webhook/c28d9d44-31c6-47f5-8226-52a669e42fcd';
-const WEBHOOK_URL = 'https://aiemma.app.n8n.cloud/webhook-test/c28d9d44-31c6-47f5-8226-52a669e42fcd'
+const WEBHOOK_URL = 'https://aiemma.app.n8n.cloud/webhook/c28d9d44-31c6-47f5-8226-52a669e42fcd';
+// const WEBHOOK_URL = 'https://aiemma.app.n8n.cloud/webhook-test/c28d9d44-31c6-47f5-8226-52a669e42fcd'
 
 /**
  * POST /api/chat
@@ -47,7 +47,23 @@ export async function POST(request: NextRequest) {
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Webhook error response:', errorText);
-      throw new Error(`Webhook error: ${response.status} - ${errorText}`);
+      
+      // Try to parse the error response for better error messages
+      let errorMessage = `Webhook error: ${response.status}`;
+      try {
+        const errorData = JSON.parse(errorText) as { message?: string; hint?: string };
+        if (errorData.message) {
+          errorMessage = errorData.message;
+          if (errorData.hint) {
+            errorMessage += ` (${errorData.hint})`;
+          }
+        }
+      } catch {
+        // If parsing fails, use the raw error text
+        errorMessage = errorText || errorMessage;
+      }
+      
+      throw new Error(errorMessage);
     }
 
     // Parse the webhook response
@@ -56,24 +72,27 @@ export async function POST(request: NextRequest) {
 
     // Extract the reply - handles both object and string responses
     const reply = data.answer 
-      || data.response 
-      || data.message 
-      || data.output
-      || (typeof data === 'string' ? data : null)
-      || 'No response from assistant';
+      ?? data.response 
+      ?? data.message 
+      ?? data.output
+      ?? (typeof data === 'string' ? data : null)
+      ?? 'No response from assistant';
 
     // Return the assistant's response to the frontend
     return NextResponse.json({
       reply: reply,
-      metadata: data.metadata || null
+      metadata: data.metadata ?? null
     });
   } catch (error) {
     // Log the error for debugging
     console.error('API Route Error:', error);
     
-    // Return a generic error message to the frontend
+    // Extract error message if available
+    const errorMessage = error instanceof Error ? error.message : 'Failed to process request';
+    
+    // Return a more informative error message to the frontend
     return NextResponse.json(
-      { error: 'Failed to process request' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

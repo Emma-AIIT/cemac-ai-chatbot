@@ -41,7 +41,7 @@ export interface WebhookResponse {
     response?: string;
     message?: string;
     output?: string;
-    metadata?: any;
+    metadata?: Record<string, unknown>;
     /** Error message if something went wrong */
     error?: string;
 }
