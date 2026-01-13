@@ -15,6 +15,8 @@ export interface Message {
     content: string;
     /** Optional timestamp when the message was created */
     timestamp?: Date;
+    /** Optional session ID for tracking user interactions */
+    sessionId?: string;
 }
 
 /**
@@ -26,6 +28,8 @@ export interface WebhookRequest {
     query: string;
     /** ISO timestamp string when the request was made */
     timestamp: string;
+    /** Optional session ID for tracking user interactions */
+    sessionId?: string;
 }
 
 /**
@@ -33,12 +37,11 @@ export interface WebhookRequest {
  * The webhook may return 'answer', 'response', or 'message' field
  */
 export interface WebhookResponse {
-    /** The AI assistant's response (primary field from Make.com) */
     answer?: string;
-    /** Alternative field name for the response */
     response?: string;
-    /** Alternative field name for the response */
     message?: string;
+    output?: string;
+    metadata?: any;
     /** Error message if something went wrong */
     error?: string;
 }
@@ -50,6 +53,8 @@ export interface WebhookResponse {
 export interface ChatRequest {
     /** The user's message text */
     message: string;
+    /** Optional session ID for tracking user interactions */
+    sessionId?: string;
 }
 
 /**
@@ -61,6 +66,8 @@ export interface ChatResponse {
     reply: string;
     /** Error message if the request failed */
     error?: string;
+    /** Optional session ID for tracking user interactions */
+    sessionId?: string;
 }
 
 /**

@@ -30,6 +30,7 @@ export default function Home() {
   // State for loading status and component mounting
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
+  const [sessionId, setSessionId] = useState<string>(''); // ADD THIS LINE
 
   // Ref for auto-scrolling to the bottom of the chat
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -38,6 +39,20 @@ export default function Home() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // ADD THIS ENTIRE useEffect:
+useEffect(() => {
+  // Check if session already exists in browser
+  let storedSession = localStorage.getItem('cemac_session_id');
+  
+  if (!storedSession) {
+    // Create new session ID
+    storedSession = `cemac_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    localStorage.setItem('cemac_session_id', storedSession);
+  }
+  
+  setSessionId(storedSession);
+}, []);
 
   /**
    * Scrolls the chat to the bottom smoothly when new messages are added
@@ -61,7 +76,8 @@ export default function Home() {
     try {
       // Prepare the request payload for the Next.js API route
       const payload: ChatRequest = {
-        message: userMessage
+        message: userMessage,
+        sessionId: sessionId
       };
 
       // Call the Next.js API route instead of the webhook directly

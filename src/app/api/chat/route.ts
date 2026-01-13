@@ -2,13 +2,14 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import type { ChatRequest, WebhookRequest, WebhookResponse } from '../../types';
 
-// Make.com webhook URL - kept secure on the server side
-const WEBHOOK_URL = 'https://hook.eu2.make.com/mlpiaiem1p5jzgkl89amtg08657yn74g';
+// n8n webhook URL - kept secure on the server side
+// const WEBHOOK_URL = 'https://aiemma.app.n8n.cloud/webhook/c28d9d44-31c6-47f5-8226-52a669e42fcd';
+const WEBHOOK_URL = 'https://aiemma.app.n8n.cloud/webhook-test/c28d9d44-31c6-47f5-8226-52a669e42fcd'
 
 /**
  * POST /api/chat
  * 
- * Handles chat requests from the frontend and forwards them to the Make.com webhook.
+ * Handles chat requests from the frontend and forwards them to the n8n webhook.
  * This keeps the webhook URL secure on the server side and provides a clean API interface.
  * 
  * @param request - Next.js request object containing the chat message
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString()
     };
 
-    // Forward the request to the Make.com webhook
+    // Forward the request to the n8n webhook
     const response = await fetch(WEBHOOK_URL, {
       method: 'POST',
       headers: {
@@ -41,8 +42,6 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify(payload)
     });
-
-    await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Check if the webhook request was successful
     if (!response.ok) {
@@ -53,10 +52,20 @@ export async function POST(request: NextRequest) {
 
     // Parse the webhook response
     const data = await response.json() as WebhookResponse;
+    console.log('Received from n8n:', data); // Debug log to see actual response structure
+
+    // Extract the reply - handles both object and string responses
+    const reply = data.answer 
+      || data.response 
+      || data.message 
+      || data.output
+      || (typeof data === 'string' ? data : null)
+      || 'No response from assistant';
 
     // Return the assistant's response to the frontend
     return NextResponse.json({
-      reply: data.answer ?? data.response ?? data.message ?? 'No response from assistant',
+      reply: reply,
+      metadata: data.metadata || null
     });
   } catch (error) {
     // Log the error for debugging
