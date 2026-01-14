@@ -26,76 +26,76 @@ export const MessageFormatter = ({ content }: MessageFormatterProps) => {
         components={{
           // Bold text styling
           strong: ({ children }) => (
-            <strong className="font-semibold text-gray-900">
+            <strong className="font-bold text-[var(--cemac-orange-dark)]">
               {children}
             </strong>
           ),
-          
+
           // List styling with custom bullets
           ul: ({ children }) => (
             <ul className="space-y-2 my-3">
               {children}
             </ul>
           ),
-          
-          // List item styling
+
+          // List item styling - single bullet only
           li: ({ children }) => (
-            <li className="flex gap-2 items-start">
-              <span className="text-orange-500 font-bold flex-shrink-0 mt-1">•</span>
-              <span>{children}</span>
+            <li className="flex gap-2.5 items-start">
+              <span className="text-[var(--cemac-orange)] font-bold flex-shrink-0 text-xs mt-1.5">●</span>
+              <span className="flex-1">{children}</span>
             </li>
           ),
           
           // Paragraph styling with proper spacing
           p: ({ children }) => (
-            <p className="my-2 leading-relaxed">
+            <p className="my-2 leading-relaxed text-[var(--text-primary)]">
               {children}
             </p>
           ),
-          
+
           // Heading styling
           h1: ({ children }) => (
-            <h1 className="text-xl font-bold text-gray-900 mb-2 mt-4">
+            <h1 className="text-xl font-bold text-[var(--text-primary)] mb-2 mt-4">
               {children}
             </h1>
           ),
-          
+
           h2: ({ children }) => (
-            <h2 className="text-lg font-semibold text-gray-900 mb-2 mt-3">
+            <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-2 mt-3">
               {children}
             </h2>
           ),
-          
+
           h3: ({ children }) => (
-            <h3 className="text-base font-semibold text-gray-900 mb-1 mt-2">
+            <h3 className="text-base font-semibold text-[var(--text-primary)] mb-1 mt-2">
               {children}
             </h3>
           ),
-          
+
           // Code styling
           code: ({ children }) => (
-            <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono text-gray-800">
+            <code className="bg-[var(--light-surface-dark)] text-[var(--cemac-orange-dark)] px-2 py-1 rounded text-sm font-mono border border-[var(--light-border)]">
               {children}
             </code>
           ),
-          
+
           // Block code styling
           pre: ({ children }) => (
-            <pre className="bg-gray-100 p-3 rounded-lg overflow-x-auto my-3">
+            <pre className="bg-[var(--light-surface-dark)] p-3 rounded-lg overflow-x-auto my-3 border border-[var(--light-border)]">
               {children}
             </pre>
           ),
-          
+
           // Emphasis styling
           em: ({ children }) => (
-            <em className="italic text-gray-700">
+            <em className="italic text-[var(--text-secondary)]">
               {children}
             </em>
           ),
-          
+
           // Strikethrough styling
           del: ({ children }) => (
-            <del className="line-through text-gray-500">
+            <del className="line-through text-[var(--text-muted)]">
               {children}
             </del>
           ),
@@ -104,7 +104,7 @@ export const MessageFormatter = ({ content }: MessageFormatterProps) => {
           a: ({ href, children }) => (
             <a
               href={href}
-              className="text-blue-600 underline hover:text-blue-800 transition-colors"
+              className="text-[var(--cemac-orange)] underline hover:text-[var(--cemac-orange-dark)] transition-colors font-medium"
               target="_blank"
               rel="noopener noreferrer"
             >

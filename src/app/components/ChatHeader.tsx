@@ -43,21 +43,29 @@ export const ChatHeader = () => {
   };
 
   return (
-    <header className="bg-gradient-to-b from-white to-gray-50 border-b border-gray-200 shadow-sm">
-      <div className="max-w-5xl mx-auto px-8 py-8">
-        <div className="flex items-center justify-between">
-          <div className="flex-1 text-center">
-            <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 mb-2">
-              Cemac Book
-            </h1>
-            <p className="text-sm text-gray-500 font-normal">
-              Ask me anything about our products and services
+    <header className="bg-[var(--light-surface)]/80 backdrop-blur-2xl border-b border-[var(--light-border)] relative z-30">
+      <div className="max-w-5xl mx-auto px-6 py-6 md:px-8 md:py-8">
+        <div className="flex items-center justify-between gap-4">
+          {/* Brand Section */}
+          <div className="flex-1 text-center slide-in-left">
+            <div className="flex items-center justify-center gap-3 mb-2">
+              {/* Decorative animated dot */}
+              <div className="w-2 h-2 rounded-full breathe" style={{ background: 'linear-gradient(135deg, var(--cemac-orange), var(--cemac-orange-dark))', boxShadow: '0 0 8px rgba(255, 107, 53, 0.4)' }}></div>
+              <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--cemac-orange)] via-[var(--cemac-orange-dark)] to-[var(--cemac-orange)] text-display tracking-tight animate-gradient">
+                Cemac Book
+              </h1>
+              <div className="w-2 h-2 rounded-full breathe" style={{ background: 'linear-gradient(135deg, var(--cemac-orange), var(--cemac-orange-dark))', boxShadow: '0 0 8px rgba(255, 107, 53, 0.4)', animationDelay: '1s' }}></div>
+            </div>
+            <p className="text-sm text-[var(--text-secondary)] font-medium">
+              Your intelligent assistant for doors, hardware & solutions
             </p>
           </div>
+
+          {/* Logout Button */}
           <button
             onClick={handleLogout}
             disabled={isLoggingOut}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--cemac-orange)] bg-[var(--light-surface-dark)] hover:bg-white rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed warm-shadow hover:warm-shadow-lg border border-[var(--light-border)] hover:border-[var(--cemac-orange)]/30 slide-in-right"
             aria-label="Logout"
           >
             <LogOut className="w-4 h-4" />
@@ -65,6 +73,9 @@ export const ChatHeader = () => {
           </button>
         </div>
       </div>
+
+      {/* Subtle underline gradient */}
+      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--cemac-orange)]/30 to-transparent"></div>
     </header>
   );
 };

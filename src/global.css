@@ -1,18 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
+    /* Vibrant orange palette */
     --cemac-orange: #FF6B35;
     --cemac-orange-light: #FF8C61;
     --cemac-orange-dark: #E55A2B;
-    --cemac-orange-accent: #FF5722;
+    --cemac-orange-accent: #FF9B73;
+    --cemac-orange-glow: rgba(255, 107, 53, 0.3);
+
+    /* Modern light palette */
+    --light-bg: #FAFBFC;
+    --light-surface: #FFFFFF;
+    --light-surface-dark: #F5F7FA;
+    --light-border: #E1E4E8;
+    --text-primary: #1A1F36;
+    --text-secondary: #4E5D78;
+    --text-muted: #8792A2;
+
+    /* Fonts */
+    --font-display: 'Outfit', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
 }
 
 * {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+}
+
+/* Remove default browser focus styles */
+*:focus {
+    outline: none;
+}
+
+*:focus-visible {
+    outline: none;
 }
 
 html,
@@ -22,29 +48,62 @@ body {
 }
 
 body {
-    color: #1f2937;
-    background: white;
+    color: var(--text-primary);
+    background: var(--light-bg);
+    font-family: var(--font-body);
     font-feature-settings:
         "rlig" 1,
         "calt" 1;
+    position: relative;
 }
 
-/* Custom scrollbar styling */
+/* Subtle grain texture overlay for depth */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* Animated gradient mesh background - light mode */
+body::after {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 20% 50%, rgba(255, 107, 53, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 107, 53, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 140, 97, 0.03) 0%, transparent 50%);
+    animation: float 20s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Custom scrollbar styling - modern light */
 ::-webkit-scrollbar {
-    width: 6px;
+    width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-    background: transparent;
+    background: var(--light-surface-dark);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(249, 115, 22, 0.3);
-    border-radius: 3px;
+    background: linear-gradient(to bottom, var(--cemac-orange), var(--cemac-orange-dark));
+    border-radius: 5px;
+    border: 2px solid var(--light-surface-dark);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(249, 115, 22, 0.5);
+    background: linear-gradient(to bottom, var(--cemac-orange-light), var(--cemac-orange));
+    box-shadow: 0 0 10px var(--cemac-orange-glow);
 }
 
 /* Smooth animations */
@@ -209,45 +268,10 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Markdown content styling */
+/* Markdown content styling - dark mode */
 .markdown-content {
-    line-height: 1.625;
-}
-
-.markdown-content strong {
-    font-weight: 600;
-    color: #1f2937;
-}
-
-.markdown-content ul {
-    list-style: none;
-    padding-left: 0;
-    margin: 12px 0;
-}
-
-.markdown-content li {
-    display: flex;
-    gap: 8px;
-    margin: 6px 0;
-}
-
-.markdown-content li::before {
-    content: "•";
-    color: var(--cemac-orange);
-    font-weight: bold;
-    flex-shrink: 0;
-}
-
-.markdown-content p {
-    margin: 8px 0;
-}
-
-.markdown-content code {
-    background: #f3f4f6;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-    font-size: 0.875em;
+    line-height: 1.7;
+    color: var(--text-primary);
 }
 
 /* Enhanced animations */
@@ -282,4 +306,127 @@ body {
 /* Smooth scrolling */
 html {
     scroll-behavior: smooth;
+}
+
+/* Enhanced entrance animations */
+@keyframes floatIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes breathe {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes softGlow {
+    0%, 100% {
+        box-shadow: 0 0 20px var(--cemac-orange-glow), 0 10px 40px rgba(255, 107, 53, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(255, 107, 53, 0.6), 0 15px 60px rgba(255, 107, 53, 0.15);
+    }
+}
+
+@keyframes gradientShift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+.animate-gradient {
+    background-size: 200% auto;
+    animation: gradientShift 3s ease-in-out infinite;
+}
+
+.float-in {
+    animation: floatIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.slide-in-left {
+    animation: slideInFromLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.slide-in-right {
+    animation: slideInFromRight 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.breathe {
+    animation: breathe 4s ease-in-out infinite;
+}
+
+.soft-glow {
+    animation: softGlow 3s ease-in-out infinite;
+}
+
+/* Staggered entrance delays */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+
+/* Custom utilities */
+.text-display {
+    font-family: var(--font-display);
+}
+
+/* Modern light shadows with subtle glow */
+.warm-shadow {
+    box-shadow: 0 2px 8px rgba(26, 31, 54, 0.06), 0 1px 3px rgba(26, 31, 54, 0.03);
+}
+
+.warm-shadow-lg {
+    box-shadow: 0 4px 16px rgba(26, 31, 54, 0.08), 0 2px 6px rgba(26, 31, 54, 0.04);
+}
+
+.warm-shadow-xl {
+    box-shadow: 0 8px 32px rgba(26, 31, 54, 0.12), 0 4px 12px rgba(26, 31, 54, 0.06);
+}
+
+/* Orange glow effects - lighter for light mode */
+.glow-orange-sm {
+    box-shadow: 0 0 16px rgba(255, 107, 53, 0.2), 0 2px 8px rgba(255, 107, 53, 0.15);
+}
+
+.glow-orange-md {
+    box-shadow: 0 0 24px rgba(255, 107, 53, 0.25), 0 4px 12px rgba(255, 107, 53, 0.2);
+}
+
+.glow-orange-lg {
+    box-shadow: 0 0 32px rgba(255, 107, 53, 0.3), 0 6px 16px rgba(255, 107, 53, 0.25);
 }
