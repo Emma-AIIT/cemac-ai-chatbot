@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChatHeader } from './components/ChatHeader';
 import { ChatMessage } from './components/ChatMessage';
 import { ChatInput } from './components/ChatInput';
-import { SuggestedQuestions } from './components/SuggestedQuestions';
+// import { SuggestedQuestions } from './components/SuggestedQuestions';
 import type { Message, ChatRequest, ChatResponse } from './types';
 
 // Next.js API route endpoint - this keeps the webhook URL secure on the server side
@@ -175,11 +175,6 @@ useEffect(() => {
                 timestamp={message.timestamp ?? new Date()}
               />
             ))}
-
-            {/* Suggested Questions - only show when there's just the welcome message */}
-            {messages.length === 1 && !isLoading && (
-              <SuggestedQuestions onQuestionSelect={handleSendMessage} />
-            )}
 
             {/* Loading indicator */}
             {isLoading && (
