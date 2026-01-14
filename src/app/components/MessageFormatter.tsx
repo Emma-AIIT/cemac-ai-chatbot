@@ -99,6 +99,18 @@ export const MessageFormatter = ({ content }: MessageFormatterProps) => {
               {children}
             </del>
           ),
+
+          // Hyperlink styling
+          a: ({ href, children }) => (
+            <a
+              href={href}
+              className="text-blue-600 underline hover:text-blue-800 transition-colors"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {children}
+            </a>
+          ),
         }}
       >
         {content}
