@@ -84,44 +84,48 @@ interface ChatMessageProps {
  */
 export const ChatMessage = ({ message, isBot, timestamp }: ChatMessageProps) => {
   return (
-    <div className="flex justify-center w-full group message-slide-up">
-      <div className={`flex items-start gap-4 max-w-4xl w-full ${isBot ? 'flex-row' : 'flex-row-reverse'}`}>
+    <div className={`flex justify-center w-full group ${isBot ? 'slide-in-left' : 'slide-in-right'}`}>
+      <div className={`flex items-start gap-5 max-w-4xl w-full ${isBot ? 'flex-row' : 'flex-row-reverse'}`}>
         {/* Avatar */}
         {isBot ? (
-          <div className="flex-shrink-0 w-11 h-11 bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 rounded-full flex items-center justify-center shadow-lg relative">
-            <span className="text-white font-bold text-xl">C</span>
-            {/* Online status indicator */}
-            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white pulse-animation"></div>
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[var(--cemac-orange)] to-[var(--cemac-orange-dark)] rounded-2xl flex items-center justify-center warm-shadow-lg glow-orange-sm group-hover:glow-orange-md relative transition-all duration-300">
+            <span className="text-white font-bold text-xl text-display">C</span>
+            {/* Online status indicator with glow */}
+            <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-400 rounded-full border-[3px] border-[var(--light-bg)] pulse-animation shadow-lg shadow-emerald-400/50"></div>
           </div>
         ) : (
-          <div className="flex-shrink-0 w-11 h-11 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center shadow-lg">
-            <span className="text-white font-bold text-xl">U</span>
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[var(--light-surface-dark)] to-[var(--light-border)] rounded-2xl flex items-center justify-center warm-shadow-lg border border-[var(--light-border)]">
+            <span className="text-[var(--text-secondary)] font-bold text-xl text-display">U</span>
           </div>
         )}
 
         {/* Message Bubble */}
         <div className={`flex-1 ${isBot ? 'flex flex-col items-start' : 'flex flex-col items-end'}`}>
           <div
-            className={`rounded-3xl max-w-[85%] transition-shadow duration-200 ${
+            className={`rounded-3xl max-w-[90%] transition-all duration-300 relative ${
               isBot
-                ? 'bg-white border border-gray-100 shadow-md hover:shadow-lg px-6 py-5'
-                : 'bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 shadow-lg px-12 py-8'
+                ? 'bg-[var(--light-surface)] backdrop-blur-xl border border-[var(--light-border)] warm-shadow group-hover:warm-shadow-lg px-7 py-6'
+                : 'bg-gradient-to-br from-[var(--cemac-orange)] to-[var(--cemac-orange-dark)] warm-shadow-lg group-hover:glow-orange-md px-8 py-6'
             }`}
-            style={!isBot ? { padding: '30px 40px' } : {}}
           >
+            {/* Subtle accent line for bot messages */}
+            {isBot && (
+              <div className="absolute top-0 left-6 right-6 h-[2px] bg-gradient-to-r from-transparent via-[var(--cemac-orange)]/20 to-transparent rounded-full"></div>
+            )}
+
             {isBot ? (
               <MessageFormatter content={message} />
             ) : (
-              <p className="text-[15px] leading-relaxed whitespace-pre-wrap text-white">
+              <p className="text-[15.5px] leading-relaxed whitespace-pre-wrap text-white font-medium">
                 {message}
               </p>
             )}
           </div>
-          
+
           {/* Timestamp */}
           {timestamp && (
-            <div className={`mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${isBot ? 'text-left' : 'text-right'}`}>
-              <span className="text-[11px] text-gray-400 font-medium">
+            <div className={`mt-2.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isBot ? 'text-left pl-2' : 'text-right pr-2'}`}>
+              <span className="text-[11px] text-[var(--text-muted)] font-medium">
                 <Timestamp timestamp={timestamp} />
               </span>
             </div>

@@ -158,11 +158,11 @@ export default function Home() {
   // Show loading state until component is mounted
   if (!mounted) {
     return (
-      <div className="flex flex-col h-screen bg-gray-50">
+      <div className="flex flex-col h-screen bg-[var(--light-bg)]">
         <div className="flex items-center justify-center h-full">
-          <div className="text-center">
-            <div className="w-12 h-12 bg-orange-500 rounded-xl mx-auto mb-4 animate-pulse"></div>
-            <p className="text-gray-600">Loading CEMAC Doors AI...</p>
+          <div className="text-center float-in">
+            <div className="w-20 h-20 bg-gradient-to-br from-[var(--cemac-orange)] to-[var(--cemac-orange-dark)] rounded-3xl mx-auto mb-6 glow-orange-md breathe"></div>
+            <p className="text-[var(--text-secondary)] font-semibold text-display text-lg">Loading CEMAC Doors AI...</p>
           </div>
         </div>
       </div>
@@ -170,14 +170,21 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
+    <div className="flex flex-col h-screen bg-[var(--light-bg)] relative overflow-hidden">
+      {/* Animated gradient orbs - lighter for light mode */}
+      <div className="absolute top-20 right-20 w-[500px] h-[500px] bg-gradient-to-br from-[var(--cemac-orange)]/12 via-[var(--cemac-orange)]/6 to-transparent rounded-full blur-3xl pointer-events-none" style={{ animation: 'float 15s ease-in-out infinite' }}></div>
+      <div className="absolute bottom-20 left-20 w-[600px] h-[600px] bg-gradient-to-tr from-[var(--cemac-orange-accent)]/8 via-[var(--cemac-orange)]/4 to-transparent rounded-full blur-3xl pointer-events-none" style={{ animation: 'float 20s ease-in-out infinite reverse' }}></div>
+
+      {/* Grid pattern overlay - subtle for light mode */}
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'linear-gradient(var(--light-border) 1px, transparent 1px), linear-gradient(90deg, var(--light-border) 1px, transparent 1px)', backgroundSize: '50px 50px' }}></div>
+
       {/* Header */}
       <ChatHeader />
 
       {/* Messages Container */}
-      <main className="flex-1 overflow-y-auto bg-gradient-to-b from-gray-50 via-white to-gray-50">
-        <div className="max-w-5xl mx-auto px-4 py-6 md:px-8 md:py-10">
-          <div className="space-y-8 mt-8" role="log" aria-live="polite">
+      <main className="flex-1 overflow-y-auto relative z-10">
+        <div className="max-w-5xl mx-auto px-4 py-8 md:px-8 md:py-12">
+          <div className="space-y-6 mt-6" role="log" aria-live="polite">
             {/* Render all chat messages */}
             {messages.map((message, index) => (
               <ChatMessage
@@ -190,22 +197,22 @@ export default function Home() {
 
             {/* Loading indicator */}
             {isLoading && (
-              <div className="flex justify-center w-full message-slide-up">
-                <div className="flex items-start gap-4 max-w-4xl w-full">
-                  <div className="flex-shrink-0 w-11 h-11 bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 rounded-full flex items-center justify-center shadow-lg relative">
-                    <span className="text-white font-bold text-xl">C</span>
+              <div className="flex justify-center w-full float-in">
+                <div className="flex items-start gap-5 max-w-4xl w-full">
+                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[var(--cemac-orange)] to-[var(--cemac-orange-dark)] rounded-2xl flex items-center justify-center warm-shadow-lg glow-orange-sm relative">
+                    <span className="text-white font-bold text-xl text-display">C</span>
                     {/* Online status indicator */}
-                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white pulse-animation"></div>
+                    <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-400 rounded-full border-[3px] border-[var(--light-bg)] breathe shadow-lg shadow-emerald-400/50"></div>
                   </div>
                   <div className="flex-1">
-                    <div className="bg-white rounded-3xl px-6 py-5 shadow-md border border-gray-100 max-w-[85%]">
+                    <div className="bg-[var(--light-surface)] backdrop-blur-xl rounded-3xl px-7 py-6 warm-shadow border border-[var(--light-border)] max-w-[90%]">
                       <div className="flex items-center gap-3">
-                        <div className="flex gap-1.5">
-                          <div className="w-2.5 h-2.5 bg-orange-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                          <div className="w-2.5 h-2.5 bg-orange-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                          <div className="w-2.5 h-2.5 bg-orange-500 rounded-full animate-bounce"></div>
+                        <div className="flex gap-2">
+                          <div className="w-2 h-2 bg-[var(--cemac-orange)] rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                          <div className="w-2 h-2 bg-[var(--cemac-orange)] rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                          <div className="w-2 h-2 bg-[var(--cemac-orange)] rounded-full animate-bounce"></div>
                         </div>
-                        <span className="text-gray-600 text-sm">CEMAC is typing...</span>
+                        <span className="text-[var(--text-secondary)] text-sm font-medium">Thinking...</span>
                       </div>
                     </div>
                   </div>
@@ -220,7 +227,7 @@ export default function Home() {
       </main>
 
       {/* Input Area */}
-      <footer className="bg-white/80 backdrop-blur-sm border-t border-gray-200 shadow-lg">
+      <footer className="bg-[var(--light-surface)]/80 backdrop-blur-xl border-t border-[var(--light-border)] relative z-20">
         <ChatInput onSend={handleSendMessage} disabled={isLoading} />
       </footer>
     </div>
