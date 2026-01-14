@@ -5,7 +5,7 @@ import { extractClientIP, isLocalIP } from './lib/utils/ip-extractor';
 import { parseUserAgent } from './lib/utils/device-detection';
 import { env } from '~/env';
 
-const PUBLIC_PATHS = ['/access-denied', '/login', '/signup', '/api/auth', '/api/admin', '/_next', '/favicon.ico'];
+const PUBLIC_PATHS = ['/access-denied', '/login', '/signup', '/admin/login', '/api/auth', '/api/admin', '/_next', '/favicon.ico'];
 const ADMIN_PATHS = ['/admin'];
 
 export async function middleware(request: NextRequest) {
