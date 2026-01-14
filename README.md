@@ -1,4 +1,4 @@
-updat# CEMAC AI Chatbot
+# CEMAC AI Chatbot
 
 A secure, IP-whitelisted AI chatbot application built with Next.js and Supabase, featuring comprehensive admin controls and real-time chat capabilities.
 
