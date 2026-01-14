@@ -21,14 +21,14 @@ export default function AdminLogin() {
         body: JSON.stringify({ secretKey }),
       });
 
-      const data = await response.json();
+      const data = await response.json() as { error?: string };
 
       if (response.ok) {
         router.push('/admin');
       } else {
-        setError(data.error || 'Invalid secret key');
+        setError(data.error ?? 'Invalid secret key');
       }
-    } catch (err) {
+    } catch {
       setError('Failed to authenticate. Please try again.');
     } finally {
       setIsLoading(false);

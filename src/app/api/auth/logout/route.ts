@@ -8,17 +8,17 @@ export async function POST(request: NextRequest) {
     env.SUPABASE_URL,
     env.SUPABASE_ANON_KEY,
     {
-      cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value;
+        cookies: {
+          get(name: string) {
+            return request.cookies.get(name)?.value;
+          },
+          set(_name: string, _value: string, _options?: { path?: string; domain?: string; maxAge?: number; httpOnly?: boolean; secure?: boolean; sameSite?: 'strict' | 'lax' | 'none' }) {
+            // Not used
+          },
+          remove(_name: string, _options?: { path?: string; domain?: string }) {
+            // Not used
+          },
         },
-        set(name: string, value: string, options: any) {
-          // Not used
-        },
-        remove(name: string, options: any) {
-          // Not used
-        },
-      },
     }
   );
 

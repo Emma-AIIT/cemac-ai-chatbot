@@ -31,7 +31,7 @@ export default function AdminDashboard() {
           }
           throw new Error('Failed to fetch stats');
         }
-        const data = await response.json();
+        const data = await response.json() as DashboardStats;
         setStats(data);
       } catch (error) {
         console.error('Error fetching stats:', error);

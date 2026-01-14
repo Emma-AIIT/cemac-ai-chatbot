@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { env } from '~/env';
 import { createClient } from '@supabase/supabase-js';
 
@@ -51,7 +52,8 @@ export async function GET(request: NextRequest) {
       .gte('last_login', thirtyDaysAgo.toISOString());
 
     // Calculate total messages
-    const totalMessages = messagesResult.data?.reduce((sum, session) => sum + (session.message_count || 0), 0) || 0;
+    type SessionWithCount = { message_count?: number | null };
+    const totalMessages = messagesResult.data?.reduce((sum: number, session: SessionWithCount) => sum + (session.message_count ?? 0), 0) ?? 0;
 
     const stats = {
       totalUsers: usersResult.count ?? 0,

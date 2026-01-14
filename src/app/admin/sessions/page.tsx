@@ -23,7 +23,13 @@ export default function SessionsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showActiveOnly, setShowActiveOnly] = useState(false);
   const [selectedSession, setSelectedSession] = useState<string | null>(null);
-  const [chatHistory, setChatHistory] = useState<any[]>([]);
+  interface ChatMessage {
+    id: string;
+    role: string;
+    content: string;
+    timestamp: string;
+  }
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const router = useRouter();
 
@@ -38,7 +44,7 @@ export default function SessionsPage() {
           }
           throw new Error('Failed to fetch sessions');
         }
-        const data = await response.json();
+        const data = await response.json() as ChatSession[];
         setSessions(data);
       } catch (error) {
         console.error('Error fetching sessions:', error);
@@ -55,7 +61,7 @@ export default function SessionsPage() {
     try {
       const response = await fetch(`/api/admin/sessions/${sessionId}/history`);
       if (!response.ok) throw new Error('Failed to fetch chat history');
-      const data = await response.json();
+      const data = await response.json() as ChatMessage[];
       setChatHistory(data);
       setSelectedSession(sessionId);
     } catch (error) {
@@ -318,7 +324,7 @@ export default function SessionsPage() {
                     <p className="text-sm text-gray-500">{chatHistory.length} messages</p>
                   </div>
                   <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                    {chatHistory.map((msg, idx) => (
+                    {chatHistory.map((msg) => (
                       <div
                         key={msg.id}
                         className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}

@@ -1,9 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { env } from '~/env';
 
 export async function POST(request: NextRequest) {
   try {
-    const { secretKey } = await request.json();
+    const body = await request.json() as { secretKey?: string };
+    const { secretKey } = body;
 
     if (!secretKey) {
       return NextResponse.json(

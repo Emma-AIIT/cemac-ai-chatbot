@@ -16,10 +16,10 @@ export async function GET(request: NextRequest) {
           get(name: string) {
             return request.cookies.get(name)?.value;
           },
-          set(name: string, value: string, options: any) {
+          set(_name: string, _value: string, _options?: { path?: string; domain?: string; maxAge?: number; httpOnly?: boolean; secure?: boolean; sameSite?: 'strict' | 'lax' | 'none' }) {
             // Not used in callback
           },
-          remove(name: string, options: any) {
+          remove(_name: string, _options?: { path?: string; domain?: string }) {
             // Not used in callback
           },
         },

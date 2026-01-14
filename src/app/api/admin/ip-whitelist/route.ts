@@ -1,9 +1,20 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { env } from '~/env';
 import { createClient } from '@supabase/supabase-js';
 
 // Use service role key for admin operations
 const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
+
+type IPWhitelistRow = {
+  id: string;
+  ip_address: string;
+  description: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string | null;
+  added_by: string | null;
+};
 
 // Verify admin authentication helper
 function verifyAdmin(request: NextRequest): boolean {
@@ -42,7 +53,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { ip_address, description } = await request.json();
+    const body = await request.json() as { ip_address?: string; description?: string };
+    const { ip_address, description } = body;
 
     if (!ip_address) {
       return NextResponse.json(
@@ -52,11 +64,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if IP already exists
-    const { data: existing } = await supabase
+    const existingResult = await supabase
       .from('ip_whitelist')
       .select('*')
       .eq('ip_address', ip_address)
       .single();
+    const existing = existingResult.data as IPWhitelistRow | null;
 
     if (existing) {
       return NextResponse.json(
@@ -66,16 +79,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Insert new IP
-    const { data, error } = await supabase
+    const result = await supabase
       .from('ip_whitelist')
       .insert({
         ip_address,
-        description: description || null,
+        description: description ?? null,
         added_by: 'admin',
         is_active: true,
       })
       .select()
       .single();
+    const { data, error } = result as { data: IPWhitelistRow | null; error: Error | null };
 
     if (error) throw error;
 
@@ -96,7 +110,8 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id, is_active } = await request.json();
+    const body = await request.json() as { id?: string; is_active?: boolean };
+    const { id, is_active } = body;
 
     if (!id || is_active === undefined) {
       return NextResponse.json(
@@ -105,12 +120,14 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const { data, error } = await supabase
+    type IPWhitelistRow = { id: string; ip_address: string; description: string | null; is_active: boolean; created_at: string; updated_at: string; added_by: string | null };
+    const updateResult = await supabase
       .from('ip_whitelist')
       .update({ is_active, updated_at: new Date().toISOString() })
       .eq('id', id)
       .select()
       .single();
+    const { data, error } = updateResult as { data: IPWhitelistRow | null; error: Error | null };
 
     if (error) throw error;
 

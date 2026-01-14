@@ -30,7 +30,7 @@ export default function UsersPage() {
           }
           throw new Error('Failed to fetch users');
         }
-        const data = await response.json();
+        const data = await response.json() as UserProfile[];
         setUsers(data);
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -186,12 +186,12 @@ export default function UsersPage() {
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
                             <span className="text-white font-medium text-sm">
-                              {user.full_name?.charAt(0).toUpperCase() || user.email.charAt(0).toUpperCase()}
+                              {(user.full_name?.charAt(0).toUpperCase() ?? user.email.charAt(0).toUpperCase())}
                             </span>
                           </div>
                           <div className="ml-4">
                             <div className="text-sm font-medium text-gray-900">
-                              {user.full_name || 'Unnamed User'}
+                              {user.full_name ?? 'Unnamed User'}
                             </div>
                             <div className="text-sm text-gray-500">ID: {user.id.slice(0, 8)}...</div>
                           </div>

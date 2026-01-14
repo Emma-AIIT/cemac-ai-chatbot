@@ -37,7 +37,7 @@ export default function AccessLogsPage() {
           }
           throw new Error('Failed to fetch logs');
         }
-        const data = await response.json();
+        const data = await response.json() as AccessLog[];
         setLogs(data);
       } catch (error) {
         console.error('Error fetching logs:', error);
@@ -58,9 +58,9 @@ export default function AccessLogsPage() {
     const matchesSearch =
       searchTerm === '' ||
       log.ip_address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      log.path?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      log.browser_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      log.os_name?.toLowerCase().includes(searchTerm.toLowerCase());
+      (log.path?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false) ||
+      (log.browser_name?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false) ||
+      (log.os_name?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false);
 
     return matchesFilter && matchesSearch;
   });
@@ -299,7 +299,7 @@ export default function AccessLogsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900 font-mono">{log.path || '/'}</div>
+                        <div className="text-sm text-gray-900 font-mono">{log.path ?? '/'}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {log.access_granted ? (

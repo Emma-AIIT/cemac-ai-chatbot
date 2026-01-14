@@ -33,7 +33,7 @@ export default function IPWhitelistPage() {
         }
         throw new Error('Failed to fetch IPs');
       }
-      const data = await response.json();
+      const data = await response.json() as IPWhitelist[];
       setIps(data);
     } catch (error) {
       console.error('Error fetching IPs:', error);
@@ -44,6 +44,7 @@ export default function IPWhitelistPage() {
 
   useEffect(() => {
     void fetchIPs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
   const handleAddIP = async (e: React.FormEvent) => {
@@ -61,10 +62,10 @@ export default function IPWhitelistPage() {
         }),
       });
 
-      const data = await response.json();
+      const data = await response.json() as { error?: string };
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to add IP');
+        throw new Error(data.error ?? 'Failed to add IP');
       }
 
       // Reset form and refresh list
@@ -314,10 +315,10 @@ export default function IPWhitelistPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">{ip.description || '-'}</div>
+                        <div className="text-sm text-gray-900">{ip.description ?? '-'}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{ip.added_by || '-'}</div>
+                        <div className="text-sm text-gray-900">{ip.added_by ?? '-'}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">{formatDate(ip.created_at)}</div>

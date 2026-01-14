@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { env } from '~/env';
 import { createClient } from '@supabase/supabase-js';
 
@@ -25,11 +26,13 @@ export async function GET(request: NextRequest) {
     if (sessionsError) throw sessionsError;
 
     // Fetch user profiles for sessions that have user_id
-    const userIds = sessions
-      ?.filter(s => s.user_id)
-      .map(s => s.user_id) || [];
+    type SessionWithUserId = { user_id: string | null };
+    const userIds = (sessions as SessionWithUserId[])
+      ?.filter((s): s is SessionWithUserId & { user_id: string } => !!s.user_id)
+      .map(s => s.user_id) ?? [];
 
-    let userProfiles: any = {};
+    type UserProfile = { id: string; email: string };
+    const userProfiles: Record<string, string> = {};
     if (userIds.length > 0) {
       const { data: profiles } = await supabase
         .from('user_profiles')
@@ -37,18 +40,18 @@ export async function GET(request: NextRequest) {
         .in('id', userIds);
 
       if (profiles) {
-        userProfiles = profiles.reduce((acc: any, profile: any) => {
-          acc[profile.id] = profile.email;
-          return acc;
-        }, {});
+        for (const profile of profiles as UserProfile[]) {
+          userProfiles[profile.id] = profile.email;
+        }
       }
     }
 
     // Combine sessions with user emails
-    const enrichedSessions = sessions?.map((session: any) => ({
+    type Session = { user_id?: string | null };
+    const enrichedSessions = sessions?.map((session: Session) => ({
       ...session,
-      user_email: session.user_id ? userProfiles[session.user_id] || null : null,
-    })) || [];
+      user_email: session.user_id ? (userProfiles[session.user_id] ?? null) : null,
+    })) ?? [];
 
     return NextResponse.json(enrichedSessions);
   } catch (error) {
