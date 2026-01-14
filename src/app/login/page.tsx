@@ -69,6 +69,8 @@ export default function LoginPage() {
         errorMessage = 'Please confirm your email address before logging in. Check your inbox for a confirmation email.';
       } else if (errorMessage.includes('User not found')) {
         errorMessage = 'No account found with this email address. Please sign up first.';
+      } else if (errorMessage.includes('rate limit') || errorMessage.includes('Too many requests')) {
+        errorMessage = 'Too many login attempts. Please wait a few minutes and try again.';
       }
 
       setError(errorMessage);

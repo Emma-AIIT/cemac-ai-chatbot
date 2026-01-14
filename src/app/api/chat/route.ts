@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import type { ChatRequest, WebhookRequest, WebhookResponse } from '../../types';
-import { supabase } from '~/lib/supabase/server';
+import { createSupabaseServerClient } from '~/lib/supabase/server';
 import { extractClientIP } from '~/lib/utils/ip-extractor';
 
 // n8n webhook URL - kept secure on the server side
@@ -30,7 +30,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get current user from session
+    // Get current user from session using cookie-aware client
+    const supabase = await createSupabaseServerClient();
     const { data: { user } } = await supabase.auth.getUser();
 
     const clientIP = extractClientIP(request);
