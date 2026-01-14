@@ -49,14 +49,15 @@ export default function LoginPage() {
 
       router.push('/');
       router.refresh();
-    } catch (err: any) {
+    } catch (err) {
       // Provide more helpful error messages
       let errorMessage = 'Failed to login';
       
-      if (err.message) {
+      if (err instanceof Error) {
         errorMessage = err.message;
-      } else if (err.error_description) {
-        errorMessage = err.error_description;
+      } else if (typeof err === 'object' && err !== null) {
+        const errorObj = err as { message?: string; error_description?: string };
+        errorMessage = errorObj.message ?? errorObj.error_description ?? errorMessage;
       } else if (typeof err === 'string') {
         errorMessage = err;
       }

@@ -24,7 +24,8 @@ export function extractClientIP(request: NextRequest): string {
     }
   }
 
-  return request.ip ?? '0.0.0.0';
+  // Fallback if no IP found in headers
+  return '0.0.0.0';
 }
 
 /**

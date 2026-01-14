@@ -9,13 +9,11 @@ let fpPromise: Promise<string> | null = null;
  * Returns a consistent hash for the same browser/device
  */
 export async function generateFingerprint(): Promise<string> {
-  if (!fpPromise) {
-    fpPromise = (async () => {
-      const fp = await FingerprintJS.load();
-      const result = await fp.get();
-      return result.visitorId;
-    })();
-  }
+  fpPromise ??= (async () => {
+    const fp = await FingerprintJS.load();
+    const result = await fp.get();
+    return result.visitorId;
+  })();
   return fpPromise;
 }
 

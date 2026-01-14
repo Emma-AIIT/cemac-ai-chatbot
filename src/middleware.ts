@@ -10,7 +10,7 @@ const ADMIN_PATHS = ['/admin'];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  let response = NextResponse.next();
+  const response = NextResponse.next();
 
   // Create Supabase client for middleware
   const supabase = createServerClient(
@@ -21,10 +21,10 @@ export async function middleware(request: NextRequest) {
         get(name: string) {
           return request.cookies.get(name)?.value;
         },
-        set(name: string, value: string, options: any) {
+        set(name: string, value: string, options?: { path?: string; domain?: string; maxAge?: number; httpOnly?: boolean; secure?: boolean; sameSite?: 'strict' | 'lax' | 'none' }) {
           response.cookies.set({ name, value, ...options });
         },
-        remove(name: string, options: any) {
+        remove(name: string, options?: { path?: string; domain?: string }) {
           response.cookies.set({ name, value: '', ...options });
         },
       },
