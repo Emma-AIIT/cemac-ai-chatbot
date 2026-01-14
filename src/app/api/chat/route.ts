@@ -1,6 +1,8 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import type { ChatRequest, WebhookRequest, WebhookResponse } from '../../types';
+import { supabase } from '~/lib/supabase/server';
+import { extractClientIP } from '~/lib/utils/ip-extractor';
 
 // n8n webhook URL - kept secure on the server side
 const WEBHOOK_URL = 'https://aiemma.app.n8n.cloud/webhook/c28d9d44-31c6-47f5-8226-52a669e42fcd';
@@ -19,7 +21,7 @@ export async function POST(request: NextRequest) {
   try {
     // Parse the incoming request body
     const body = await request.json() as ChatRequest;
-    
+
     // Validate that a message was provided
     if (!body.message) {
       return NextResponse.json(
@@ -28,10 +30,40 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get current user from session
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const clientIP = extractClientIP(request);
+    const sessionId = body.sessionId;
+    const fingerprint = body.fingerprint;
+
+    // Update/create session with user_id
+    if (sessionId) {
+      await supabase.from('chat_sessions').upsert({
+        session_id: sessionId,
+        user_id: user?.id ?? null,
+        ip_address: clientIP,
+        fingerprint: fingerprint,
+        last_seen: new Date().toISOString(),
+      }, { onConflict: 'session_id' });
+
+      // Increment message count
+      await supabase.rpc('increment_message_count', { p_session_id: sessionId });
+
+      // Store user message
+      await supabase.from('chat_history').insert({
+        session_id: sessionId,
+        role: 'user',
+        content: body.message,
+      });
+    }
+
     // Transform the chat request into the webhook format
     const payload: WebhookRequest = {
       query: body.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      sessionId: sessionId,
+      fingerprint: fingerprint,
     };
 
     // Forward the request to the n8n webhook
@@ -71,17 +103,27 @@ export async function POST(request: NextRequest) {
     console.log('Received from n8n:', data); // Debug log to see actual response structure
 
     // Extract the reply - handles both object and string responses
-    const reply = data.answer 
-      ?? data.response 
-      ?? data.message 
+    const reply = data.answer
+      ?? data.response
+      ?? data.message
       ?? data.output
       ?? (typeof data === 'string' ? data : null)
       ?? 'No response from assistant';
 
+    // Store assistant message
+    if (sessionId) {
+      await supabase.from('chat_history').insert({
+        session_id: sessionId,
+        role: 'assistant',
+        content: reply,
+      });
+    }
+
     // Return the assistant's response to the frontend
     return NextResponse.json({
       reply: reply,
-      metadata: data.metadata ?? null
+      metadata: data.metadata ?? null,
+      sessionId: sessionId,
     });
   } catch (error) {
     // Log the error for debugging

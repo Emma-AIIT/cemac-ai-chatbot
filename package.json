@@ -16,6 +16,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@fingerprintjs/fingerprintjs": "^4.6.2",
+    "@supabase/ssr": "^0.1.0",
+    "@supabase/supabase-js": "^2.90.1",
     "@t3-oss/env-nextjs": "^0.12.0",
     "fs": "^0.0.1-security",
     "lightningcss": "^1.30.2",
@@ -26,6 +29,7 @@
     "react-markdown": "^10.1.0",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
+    "ua-parser-js": "^1.0.41",
     "zod": "^3.24.2"
   },
   "devDependencies": {
@@ -33,6 +37,7 @@
     "@types/node": "^20.14.10",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@types/ua-parser-js": "^0.7.39",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.23.0",
     "eslint-config-next": "^15.2.3",

@@ -30,6 +30,8 @@ export interface WebhookRequest {
     timestamp: string;
     /** Optional session ID for tracking user interactions */
     sessionId?: string;
+    /** Optional browser fingerprint for device tracking */
+    fingerprint?: string;
 }
 
 /**
@@ -55,6 +57,8 @@ export interface ChatRequest {
     message: string;
     /** Optional session ID for tracking user interactions */
     sessionId?: string;
+    /** Optional browser fingerprint for device tracking */
+    fingerprint?: string;
 }
 
 /**
