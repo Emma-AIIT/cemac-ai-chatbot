@@ -111,6 +111,24 @@ export async function POST(request: NextRequest) {
       ?? (typeof data === 'string' ? data : null)
       ?? 'No response from assistant';
 
+    // Log URLs found in the reply to help debug URL mismatches
+    if (reply && typeof reply === 'string') {
+      const urlRegex = /https?:\/\/[^\s\)]+/g;
+      const urls = reply.match(urlRegex);
+      if (urls) {
+        console.log('URLs found in n8n response:', urls);
+        // Specifically log Dropbox URLs to track rlkey changes
+        urls.forEach(url => {
+          if (url.includes('dropbox.com') && url.includes('rlkey=')) {
+            const rlkeyMatch = /rlkey=([^&]+)/.exec(url);
+            if (rlkeyMatch) {
+              console.log(`Dropbox URL detected with rlkey: ${rlkeyMatch[1]}`);
+            }
+          }
+        });
+      }
+    }
+
     // Store assistant message
     if (sessionId) {
       await supabase.from('chat_history').insert({
