@@ -19,6 +19,23 @@ interface MessageFormatterProps {
  * Uses GitHub Flavored Markdown for enhanced formatting capabilities.
  */
 export const MessageFormatter = ({ content }: MessageFormatterProps) => {
+  // Log raw content to see what URLs are in the markdown before parsing
+  if (content && typeof content === 'string' && content.includes('dropbox.com')) {
+    const urlRegex = /https?:\/\/[^\s\)]+/g;
+    const urls = content.match(urlRegex);
+    if (urls) {
+      urls.forEach(url => {
+        if (url.includes('rlkey=')) {
+          const rlkeyMatch = /rlkey=([^&]+)/.exec(url);
+          if (rlkeyMatch) {
+            console.log(`[MessageFormatter] Raw content URL: ${url}`);
+            console.log(`[MessageFormatter] rlkey in raw content: ${rlkeyMatch[1]}`);
+          }
+        }
+      });
+    }
+  }
+
   return (
     <div className="markdown-content text-[15px] leading-relaxed">
       <ReactMarkdown
@@ -101,16 +118,27 @@ export const MessageFormatter = ({ content }: MessageFormatterProps) => {
           ),
 
           // Hyperlink styling
-          a: ({ href, children }) => (
-            <a
-              href={href}
-              className="text-[var(--cemac-orange)] underline hover:text-[var(--cemac-orange-dark)] transition-colors font-medium"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {children}
-            </a>
-          ),
+          a: ({ href, children }) => {
+            // Log Dropbox URLs to debug rlkey changes
+            if (href && typeof href === 'string' && href.includes('dropbox.com') && href.includes('rlkey=')) {
+              const rlkeyMatch = /rlkey=([^&]+)/.exec(href);
+              if (rlkeyMatch) {
+                console.log(`[MessageFormatter] Dropbox link href: ${href}`);
+                console.log(`[MessageFormatter] rlkey in href: ${rlkeyMatch[1]}`);
+              }
+            }
+            
+            return (
+              <a
+                href={href}
+                className="text-[var(--cemac-orange)] underline hover:text-[var(--cemac-orange-dark)] transition-colors font-medium"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {children}
+              </a>
+            );
+          },
         }}
       >
         {content}
