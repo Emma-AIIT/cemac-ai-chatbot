@@ -108,6 +108,23 @@ export default function Home() {
       // Parse the response from our API route
       const data = await response.json() as ChatResponse;
 
+      // Log URLs in the reply received from API
+      if (data.reply && typeof data.reply === 'string' && data.reply.includes('dropbox.com')) {
+        const urlRegex = /https?:\/\/[^\s\)]+/g;
+        const urls = data.reply.match(urlRegex);
+        if (urls) {
+          urls.forEach(url => {
+            if (url.includes('rlkey=')) {
+              const rlkeyMatch = /rlkey=([^&]+)/.exec(url);
+              if (rlkeyMatch) {
+                console.log(`[Frontend] URL in API response: ${url}`);
+                console.log(`[Frontend] rlkey in API response: ${rlkeyMatch[1]}`);
+              }
+            }
+          });
+        }
+      }
+
       // Create assistant message from the API response
       const assistantMessage: Message = {
         role: 'assistant',

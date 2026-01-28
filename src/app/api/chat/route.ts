@@ -99,9 +99,28 @@ export async function POST(request: NextRequest) {
       throw new Error(errorMessage);
     }
 
+    // Get raw response text first to log exact content before parsing
+    const responseText = await response.text();
+    console.log('Raw response from n8n:', responseText);
+    
+    // Check for URLs in raw response
+    if (responseText.includes('dropbox.com') && responseText.includes('rlkey=')) {
+      const urlRegex = /https?:\/\/[^\s\)"]+dropbox\.com[^\s\)"]+/g;
+      const urls = responseText.match(urlRegex);
+      if (urls) {
+        urls.forEach(url => {
+          const rlkeyMatch = /rlkey=([^&]+)/.exec(url);
+          if (rlkeyMatch) {
+            console.log(`[API Route] Dropbox URL in raw response: ${url}`);
+            console.log(`[API Route] rlkey in raw response: ${rlkeyMatch[1]}`);
+          }
+        });
+      }
+    }
+
     // Parse the webhook response
-    const data = await response.json() as WebhookResponse;
-    console.log('Received from n8n:', data); // Debug log to see actual response structure
+    const data = JSON.parse(responseText) as WebhookResponse;
+    console.log('Parsed response from n8n:', data); // Debug log to see actual response structure
 
     // Extract the reply - handles both object and string responses
     const reply = data.answer
@@ -111,6 +130,24 @@ export async function POST(request: NextRequest) {
       ?? (typeof data === 'string' ? data : null)
       ?? 'No response from assistant';
 
+    // Log URLs found in the reply to help debug URL mismatches
+    if (reply && typeof reply === 'string') {
+      const urlRegex = /https?:\/\/[^\s\)]+/g;
+      const urls = reply.match(urlRegex);
+      if (urls) {
+        console.log('URLs found in n8n response:', urls);
+        // Specifically log Dropbox URLs to track rlkey changes
+        urls.forEach(url => {
+          if (url.includes('dropbox.com') && url.includes('rlkey=')) {
+            const rlkeyMatch = /rlkey=([^&]+)/.exec(url);
+            if (rlkeyMatch) {
+              console.log(`Dropbox URL detected with rlkey: ${rlkeyMatch[1]}`);
+            }
+          }
+        });
+      }
+    }
+
     // Store assistant message
     if (sessionId) {
       await supabase.from('chat_history').insert({
@@ -118,6 +155,23 @@ export async function POST(request: NextRequest) {
         role: 'assistant',
         content: reply,
       });
+    }
+
+    // Log the final reply being sent to frontend
+    if (reply && typeof reply === 'string' && reply.includes('dropbox.com')) {
+      const urlRegex = /https?:\/\/[^\s\)]+/g;
+      const urls = reply.match(urlRegex);
+      if (urls) {
+        urls.forEach(url => {
+          if (url.includes('rlkey=')) {
+            const rlkeyMatch = /rlkey=([^&]+)/.exec(url);
+            if (rlkeyMatch) {
+              console.log(`[API Route] Final reply URL being sent to frontend: ${url}`);
+              console.log(`[API Route] rlkey in final reply: ${rlkeyMatch[1]}`);
+            }
+          }
+        });
+      }
     }
 
     // Return the assistant's response to the frontend
